@@ -7,14 +7,7 @@ import java.io.Serializable;
  * A collection is a group of elements, possibly of different types, that can be
  * iterated over, checked for containment, copied, and serialized.
  * </p>
- *
- * <p>
- * The type parameter {@code E} represents the type of elements stored in the
- * collection, while the type parameter {@code T} represents the implementing
- * class itself, allowing methods like {@link #copy()} to return the
- * implementing type.
- * </p>
- *
+ * 
  * @param <E> the type of elements in the collection
  * @param <T> the type of the implementing class
  *

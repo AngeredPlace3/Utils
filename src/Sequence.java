@@ -1,3 +1,4 @@
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -9,14 +10,7 @@ import java.util.Objects;
  * A sequence represents an ordered collection of elements, where the order of
  * elements matters.
  * </p>
- *
- * <p>
- * The type parameter {@code E} represents the type of elements stored in the
- * sequence, while the type parameter {@code T} represents the implementing
- * class itself, allowing methods like {@link #copy()} to return the
- * implementing type.
- * </p>
- *
+ * 
  * @param <E> the type of elements in the sequence
  * @param <T> the type of the implementing class
  *
@@ -178,13 +172,26 @@ public interface Sequence<E, T extends Sequence<E, T>> extends Collection<E, T> 
      * @return a new sequence with elements in reverse order
      */
     default T reversed() {
-        return reversed(0, getSize());
+        return reversed(0);
     }
 
     /**
      * Returns a new sequence containing the elements of this sequence in reverse
-     * order within the specified range from {@code fromIndex} (inclusive) to
-     * {@code toIndex} (exclusive).
+     * order, starting from the specified {@code fromIndex}.
+     *
+     * @param fromIndex the starting index of the range to reverse (inclusive)
+     * @return a new sequence with elements in reverse order starting from the
+     *         specified index
+     * @throws IndexOutOfBoundsException if the specified index is out of range
+     */
+    default T reversed(int fromIndex) {
+        return reversed(fromIndex, getSize());
+    }
+
+    /**
+     * Returns a new sequence containing the elements of this sequence in reverse
+     * order within the specified range from {@code fromIndex}to
+     * {@code toIndex}.
      *
      * @param fromIndex the starting index of the range to reverse (inclusive)
      * @param toIndex   the ending index of the range to reverse (exclusive)
@@ -193,6 +200,106 @@ public interface Sequence<E, T extends Sequence<E, T>> extends Collection<E, T> 
      * @throws IndexOutOfBoundsException if the specified range is invalid
      */
     T reversed(int fromIndex, int toIndex) throws IndexOutOfBoundsException;
+
+    /**
+     * Returns a new sequence containing the elements of this sequence sorted
+     * according to the provided {@code comparator}, within the specified range
+     * from {@code fromIndex} (inclusive) to {@code toIndex} (exclusive).
+     *
+     * @param comparator the comparator to determine the order of the elements
+     * @param fromIndex  the starting index of the range to be sorted (inclusive)
+     * @param toIndex    the ending index of the range to be sorted (exclusive)
+     * @return a new sequence with elements sorted within the specified range
+     * @throws IndexOutOfBoundsException if the specified range is invalid
+     */
+    T sorted(Comparator<? extends E> comparator, int fromIndex, int toIndex) throws IndexOutOfBoundsException;
+
+    /**
+     * Returns a new sequence containing the elements of this sequence sorted
+     * according to the provided {@code comparator}, starting from the specified
+     * {@code fromIndex}.
+     *
+     * @param comparator the comparator to determine the order of the elements
+     * @param fromIndex  the starting index of the range to be sorted (inclusive)
+     * @return a new sequence with elements sorted starting from the specified index
+     * @throws IndexOutOfBoundsException if the specified index is out of range
+     */
+    default T sorted(Comparator<? extends E> comparator, int fromIndex) throws IndexOutOfBoundsException {
+        return sorted(comparator, fromIndex, getSize());
+    }
+
+    /**
+     * Returns a new sequence containing the elements of this sequence sorted
+     * according to the provided {@code comparator}, starting from index 0.
+     *
+     * @param comparator the comparator to determine the order of the elements
+     * @return a new sequence with elements sorted starting from index 0
+     */
+    default T sorted(Comparator<? extends E> comparator) {
+        return sorted(comparator, 0);
+    }
+
+    /**
+     * Returns a new sequence containing the elements of this sequence sorted
+     * according to their natural ordering, within the specified range from
+     * {@code fromIndex} (inclusive) to {@code toIndex} (exclusive).
+     *
+     * @param fromIndex the starting index of the range to be sorted (inclusive)
+     * @param toIndex   the ending index of the range to be sorted (exclusive)
+     * @return a new sequence with elements sorted within the specified range
+     * @throws IndexOutOfBoundsException if the specified range is invalid
+     */
+    @SuppressWarnings("unchecked")
+    default T sorted(int fromIndex, int toIndex) throws IndexOutOfBoundsException {
+
+        class NaturalComparator implements Comparator<Object> {
+
+            @Override
+            public int compare(Object arg0, Object arg1) {
+                if (arg0 instanceof Comparable a) {
+                    try {
+                        return a.compareTo(arg1);
+                    } catch (ClassCastException | NullPointerException e) {
+                    }
+                }
+
+                if (arg1 instanceof Comparable b) {
+                    try {
+                        return -b.compareTo(arg0);
+                    } catch (ClassCastException | NullPointerException e) {
+                    }
+                }
+
+                return 0;
+            }
+
+        }
+
+        return sorted((Comparator<? extends E>) new NaturalComparator(), fromIndex, toIndex);
+    }
+
+    /**
+     * Returns a new sequence containing the elements of this sequence sorted
+     * according to their natural ordering, starting from the specified
+     * {@code fromIndex}.
+     *
+     * @param fromIndex the starting index of the range to be sorted (inclusive)
+     * @return a new sequence with elements sorted starting from the specified index
+     * @throws IndexOutOfBoundsException if the specified index is out of range
+     */
+    default T sorted(int fromIndex) throws IndexOutOfBoundsException {
+        return sorted(fromIndex, getSize());
+    }
+
+    /**
+     * Returns a new sequence containing the elements of this sequence sorted
+     * according to their natural ordering, starting from index 0.
+     *
+     * @return a new sequence with elements sorted starting from index 0
+     */
+    default T sorted() {
+        return sorted(0);
+    }
 
     /**
      * Returns an iterator over the elements in this sequence in the forward
