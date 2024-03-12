@@ -212,7 +212,7 @@ public interface Sequence<E, T extends Sequence<E, T>> extends Collection<E, T> 
      * @return a new sequence with elements sorted within the specified range
      * @throws IndexOutOfBoundsException if the specified range is invalid
      */
-    T sorted(Comparator<? extends E> comparator, int fromIndex, int toIndex) throws IndexOutOfBoundsException;
+    T sorted(Comparator<? super E> comparator, int fromIndex, int toIndex) throws IndexOutOfBoundsException;
 
     /**
      * Returns a new sequence containing the elements of this sequence sorted
@@ -224,7 +224,7 @@ public interface Sequence<E, T extends Sequence<E, T>> extends Collection<E, T> 
      * @return a new sequence with elements sorted starting from the specified index
      * @throws IndexOutOfBoundsException if the specified index is out of range
      */
-    default T sorted(Comparator<? extends E> comparator, int fromIndex) throws IndexOutOfBoundsException {
+    default T sorted(Comparator<? super E> comparator, int fromIndex) throws IndexOutOfBoundsException {
         return sorted(comparator, fromIndex, getSize());
     }
 
@@ -235,70 +235,8 @@ public interface Sequence<E, T extends Sequence<E, T>> extends Collection<E, T> 
      * @param comparator the comparator to determine the order of the elements
      * @return a new sequence with elements sorted starting from index 0
      */
-    default T sorted(Comparator<? extends E> comparator) {
+    default T sorted(Comparator<? super E> comparator) {
         return sorted(comparator, 0);
-    }
-
-    /**
-     * Returns a new sequence containing the elements of this sequence sorted
-     * according to their natural ordering, within the specified range from
-     * {@code fromIndex} (inclusive) to {@code toIndex} (exclusive).
-     *
-     * @param fromIndex the starting index of the range to be sorted (inclusive)
-     * @param toIndex   the ending index of the range to be sorted (exclusive)
-     * @return a new sequence with elements sorted within the specified range
-     * @throws IndexOutOfBoundsException if the specified range is invalid
-     */
-    @SuppressWarnings("unchecked")
-    default T sorted(int fromIndex, int toIndex) throws IndexOutOfBoundsException {
-
-        class NaturalComparator implements Comparator<Object> {
-
-            @Override
-            public int compare(Object arg0, Object arg1) {
-                if (arg0 instanceof Comparable a) {
-                    try {
-                        return a.compareTo(arg1);
-                    } catch (ClassCastException | NullPointerException e) {
-                    }
-                }
-
-                if (arg1 instanceof Comparable b) {
-                    try {
-                        return -b.compareTo(arg0);
-                    } catch (ClassCastException | NullPointerException e) {
-                    }
-                }
-
-                return 0;
-            }
-
-        }
-
-        return sorted((Comparator<? extends E>) new NaturalComparator(), fromIndex, toIndex);
-    }
-
-    /**
-     * Returns a new sequence containing the elements of this sequence sorted
-     * according to their natural ordering, starting from the specified
-     * {@code fromIndex}.
-     *
-     * @param fromIndex the starting index of the range to be sorted (inclusive)
-     * @return a new sequence with elements sorted starting from the specified index
-     * @throws IndexOutOfBoundsException if the specified index is out of range
-     */
-    default T sorted(int fromIndex) throws IndexOutOfBoundsException {
-        return sorted(fromIndex, getSize());
-    }
-
-    /**
-     * Returns a new sequence containing the elements of this sequence sorted
-     * according to their natural ordering, starting from index 0.
-     *
-     * @return a new sequence with elements sorted starting from index 0
-     */
-    default T sorted() {
-        return sorted(0);
     }
 
     /**
@@ -319,6 +257,8 @@ public interface Sequence<E, T extends Sequence<E, T>> extends Collection<E, T> 
 
             @Override
             public E next() {
+                if (!hasNext())
+                    throw new NoSuchElementException("No more elements");
                 return get(index++);
             }
 
@@ -342,10 +282,17 @@ public interface Sequence<E, T extends Sequence<E, T>> extends Collection<E, T> 
 
             @Override
             public E next() {
+                if (!hasNext())
+                    throw new NoSuchElementException("No more elements");
                 return get(index--);
             }
-
         };
     }
 
+    /**
+     * Returns a new sequence that is cleared, containing no elements.
+     *
+     * @return a new sequence cleared of all elements
+     */
+    T cleared();
 }
