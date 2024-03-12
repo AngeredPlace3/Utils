@@ -1,3 +1,4 @@
+package util;
 /**
  * A generic interface for objects that support copying, allowing them to create
  * copies of themselves.

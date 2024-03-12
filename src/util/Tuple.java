@@ -1,3 +1,5 @@
+package util;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -5,21 +7,63 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Predicate;
 
+/**
+ * Represents a tuple of elements.
+ *
+ * @param <E> the type of elements in the tuple
+ */
 public class Tuple<E> implements ImmutableSequence<E, Tuple<E>> {
     private final E[] elements;
 
-    private static final Tuple<?> EMPTY = new Tuple<>(null, false);
+    private static final Tuple<?> EMPTY = new Tuple<>();
 
+    /**
+     * Returns an empty tuple.
+     * 
+     * @param <T> the type of elements in the tuple
+     * @return an empty tuple
+     */
     @SuppressWarnings("unchecked")
     public static <T> Tuple<T> of() {
         return (Tuple<T>) EMPTY;
     }
 
+    /**
+     * Constructs a tuple with the specified elements.
+     * 
+     * @param elements the elements to be included in the tuple
+     */
     @SuppressWarnings("unchecked")
     public Tuple(E... elements) {
         this(elements, true);
     }
 
+    /**
+     * Constructs an empty tuple.
+     */
+    public Tuple() {
+        this(null, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Tuple(Collection<E, ?> elements) {
+        this.elements = (E[]) elements.toArray();
+    }
+
+    public Tuple(Iterator<E> elements) {
+        this(new Deque<>(elements));
+    }
+
+    public Tuple(Iterable<E> elements) {
+        this(elements.iterator());
+    }
+
+    /**
+     * Constructs a tuple with the specified elements, optionally copying them.
+     * 
+     * @param elements the elements to be included in the tuple
+     * @param copy     true to copy the elements, false otherwise
+     */
     private Tuple(E[] elements, boolean copy) {
         if (copy && elements != null) {
             this.elements = elements.clone();
@@ -179,10 +223,44 @@ public class Tuple<E> implements ImmutableSequence<E, Tuple<E>> {
         return new Tuple<>(setElements, false);
     }
 
+    /**
+     * Returns a string representation of this tuple.
+     * 
+     * @return a string representation of this tuple
+     */
     @Override
     public String toString() {
         StringJoiner joiner = new StringJoiner(", ", "(", ")");
         forEach((e) -> joiner.add(Objects.toString(e)));
         return joiner.toString();
     }
+
+    /**
+     * Indicates whether some other object is "equal to" this tuple.
+     * 
+     * @param obj the reference object with which to compare
+     * @return true if this tuple is the same as the obj argument, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Tuple<?>) {
+            return false;
+        }
+        Tuple<?> other = (Tuple<?>) obj;
+        return Arrays.equals(elements, other.elements);
+    }
+
+    /**
+     * Returns the hash code value for this tuple.
+     * 
+     * @return the hash code value for this tuple
+     */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(elements);
+    }
+
 }
