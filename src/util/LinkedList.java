@@ -1,94 +1,39 @@
 package util;
 
-import java.util.Iterator;
+import java.util.Objects;
 
 public class LinkedList<T> extends List<T> {
 
     private class Node {
-        T value;
-        Node next;
-        Node previous;
-    }
-
-    private int size = 0;
-    private Node head;
-    private Node tail;
-
-    private LinkedList(int size, LinkedList<T>.Node head, LinkedList<T>.Node tail) {
-        this.size = size;
-        this.head = head;
-        this.tail = tail;
+        T item;
+        Node next, previous;
     }
 
     public LinkedList() {
-        this.head = new Node();
-        this.tail = new Node();
-        this.head.next = this.tail;
-        this.tail.previous = this.head;
+        clear();
+    }
+
+    private Node head = new Node(), tail = new Node();
+    private int size = 0;
+
+    private LinkedList(Node head, Node tail, int size) {
+        this.head = head;
+        this.tail = tail;
+        this.size = size;
+    }
+
+    @Override
+    public void clear() {
         size = 0;
+        head.next = tail;
+        tail.previous = head;
     }
 
     @Override
-    public void set(int index, T item) throws IndexOutOfBoundsException {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException(String.format("Index %d out of bounds of [0, %d)", index, size));
-        }
-        getNodeAt(index).value = item;
-    }
-
-    @Override
-    public void insert(int index, T item) throws IndexOutOfBoundsException {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException(String.format("Index %d out of bounds of [0, %d]", index, size));
-        }
-
-        Node n = new Node();
-        n.value = item;
-        n.next = getNodeAt(index);
-        n.previous = n.next.previous;
-        n.previous.next = n;
-        n.next.previous = n;
-        size++;
-    }
-
-    @Override
-    public void insertAll(int index, Iterable<T> items) throws IndexOutOfBoundsException {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException(String.format("Index %d out of bounds of [0, %d]", index, size));
-        }
-        Node after = getNodeAt(index);
-        for (T item : items) {
-            Node n = new Node();
-            n.value = item;
-            n.next = after;
-            n.previous = after.previous;
-            n.previous.next = n;
-            n.next.previous = n;
-            size++;
-        }
-    }
-
-    @Override
-    public T remove(int index) throws IndexOutOfBoundsException {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException(String.format("Index %d out of bounds of [0, %d)", index, size));
-        }
-
-        Node n = getNodeAt(index);
-
-        n.previous.next = n.next;
-        n.next.previous = n.previous;
-        size--;
-
-        return n.value;
-    }
-
-    @Override
-    public T get(int index) throws IndexOutOfBoundsException {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException(String.format("Index %d out of bounds of [0, %d)", index, size));
-        }
-        return getNodeAt(index).value;
+    public T get(int index) {
+        Objects.checkIndex(index, size);
+        Node node = getNode(index);
+        return node.item;
     }
 
     @Override
@@ -97,57 +42,57 @@ public class LinkedList<T> extends List<T> {
     }
 
     @Override
-    public void clear() {
-        head.next = tail;
-        tail.previous = head;
-        size = 0;
+    public void insert(T item, int index) throws IndexOutOfBoundsException {
+        Objects.checkIndex(index, size + 1);
+        size++;
+        Node node = new Node();
+        node.item = item;
+        Node previous = getNode(index);
+        node.next = previous;
+        node.previous = previous.previous;
+        previous.previous.next = node;
+        previous.previous = node;
     }
 
     @Override
-    public Iterator<T> iterator() {
-
-        class LinkedListIterator implements Iterator<T> {
-
-            private Node current = head.next;
-
-            @Override
-            public boolean hasNext() {
-                return current != tail;
-            }
-
-            @Override
-            public T next() {
-                T value = current.value;
-                current = current.next;
-                return value;
-            }
-        }
-
-        return new LinkedListIterator();
+    public T remove(int index) throws IndexOutOfBoundsException {
+        Objects.checkIndex(index, size);
+        size--;
+        Node node = getNode(index);
+        node.previous.next = node.next;
+        node.next.previous = node.previous;
+        return node.item;
     }
 
-    private Node getNodeAt(int index) {
+    @Override
+    public T set(int index, T item) throws IndexOutOfBoundsException {
+        Objects.checkIndex(index, size);
+        Node node = getNode(index);
+        T old = node.item;
+        node.item = item;
+        return old;
+    }
+
+    private Node getNode(int index) {
         if (index > size / 2) {
-            Node n = tail;
-            for (int i = size - 1; i >= index; i--) {
-                n = n.previous;
+            Node current = tail;
+            for (int i = size - 1; i >= index && current.previous != null; i--) {
+                current = current.previous;
             }
-            return n;
+            return current;
         } else {
-            Node n = head;
-            for (int i = 0; i <= index; i++) {
-                n = n.next;
+            Node current = head;
+            for (int i = 0; i <= index && current.next != null; i++) {
+                current = current.next;
             }
-            return n;
+            return current;
         }
     }
 
     @Override
-    public LinkedList<T> sub(int start, int end) {
-        if (start < 0 || end > size || start > end) {
-            throw new IndexOutOfBoundsException(String.format("Index %d out of bounds of [0, %d]", start, end));
-        }
-        return new LinkedList<>(end - start, getNodeAt(start - 1), getNodeAt(end));
+    public LinkedList<T> sub(int from, int to) throws IndexOutOfBoundsException {
+        Objects.checkFromToIndex(from, to, size);
+        return new LinkedList<>(getNode(from - 1), getNode(to), to - from);
     }
 
 }

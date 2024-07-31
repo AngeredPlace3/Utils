@@ -1,30 +1,19 @@
 
-import java.util.Comparator;
-
+import util.ArrayList;
 import util.LinkedList;
-import util.Sequence;
+import util.List;
 
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
-        LinkedList<Integer> list = new LinkedList<>();
+        List<Integer> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             list.prepend(i);
         }
-        Sequence<Integer> list2 = list.sub(0, 5);
-
-        System.out.println(list + " " + list2 + " " + list2.count());
+        List<Integer> list2 = list.sub(0, 5);
         list2.clear();
-        System.out.println(list + " " + list2);
+
+        System.out.println(list + " " + list2 + " " + list2.count() + " ");
     }
 
-    public static <T> void sort(Sequence<T> sequence, Comparator<T> comparator) {
-        for (int i = 0; i < sequence.count(); i++) {
-            for (int j = i + 1; j < sequence.count(); j++) {
-                if (comparator.compare(sequence.get(i), sequence.get(j)) > 0) {
-                    sequence.swap(i, j);
-                }
-            }
-        }
-    }
 }
