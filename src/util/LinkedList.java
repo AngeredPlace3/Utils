@@ -97,11 +97,18 @@ public class LinkedList<T> extends List<T> {
     }
 
     @Override
+    public void clear() {
+        head.next = tail;
+        tail.previous = head;
+        size = 0;
+    }
+
+    @Override
     public Iterator<T> iterator() {
 
         class LinkedListIterator implements Iterator<T> {
 
-            private Node current = head;
+            private Node current = head.next;
 
             @Override
             public boolean hasNext() {
@@ -122,28 +129,25 @@ public class LinkedList<T> extends List<T> {
     private Node getNodeAt(int index) {
         if (index > size / 2) {
             Node n = tail;
-            for (int i = size - 1; i > index; i--) {
+            for (int i = size - 1; i >= index; i--) {
                 n = n.previous;
             }
             return n;
         } else {
             Node n = head;
-            for (int i = 0; i < index; i++) {
+            for (int i = 0; i <= index; i++) {
                 n = n.next;
             }
             return n;
         }
     }
 
-    public static void main(String[] args) {
-
-        LinkedList<String> list = new LinkedList<>();
-
-        list.insert(0, "a");
-        list.insert(1, "b");
-        list.insert(2, "c");
-
-        System.out.println(list);
+    @Override
+    public LinkedList<T> sub(int start, int end) {
+        if (start < 0 || end > size || start > end) {
+            throw new IndexOutOfBoundsException(String.format("Index %d out of bounds of [0, %d]", start, end));
+        }
+        return new LinkedList<>(end - start, getNodeAt(start - 1), getNodeAt(end));
     }
 
 }

@@ -27,4 +27,5 @@ public interface ReadonlyCollection<T> extends Iterable<T> {
         }
         return true;
     }
+
 }
