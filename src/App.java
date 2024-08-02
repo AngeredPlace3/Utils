@@ -1,19 +1,27 @@
-
-import util.ArrayList;
-import util.LinkedList;
-import util.List;
+import util.Range;
+import util.collections.*;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
-        List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.prepend(i);
-        }
-        List<Integer> list2 = list.sub(0, 5);
-        list2.clear();
+        Range range = new Range(10, 0, 2);
+        Queue.Mutable<Integer> list = new ArrayList<>();
 
-        System.out.println(list + " " + list2 + " " + list2.count() + " ");
+        System.out.println(range + " first " + range.getFirst());
+        System.out.println(range + " last " + range.getLast());
+
+        for (int i : range) {
+            list.addLast(i);
+        }
+
+        System.out.println(list + " " + list.size() + " " + range.size());
+        dequeue(list);
+        System.out.println(list + " " + list.size() + " " + range.size());
+
     }
 
+    static void dequeue(Queue.Mutable<Integer> queue) {
+        while (!queue.isEmpty()) {
+            System.out.println(queue.removeFirst());
+        }
+    }
 }
