@@ -1,4 +1,4 @@
-package util.interfaces;
+package util.collections;
 
 /**
  * Represents a read-only set of elements.

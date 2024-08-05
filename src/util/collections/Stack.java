@@ -1,4 +1,5 @@
-package util.interfaces;
+
+package util.collections;
 
 import java.util.NoSuchElementException;
 

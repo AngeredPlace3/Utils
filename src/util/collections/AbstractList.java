@@ -1,14 +1,11 @@
-package util;
+package util.collections;
 
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import util.interfaces.List;
-import util.interfaces.ReadOnlyList;
-
 /**
- * Provides a base implementation of the {@link List} interface.
+ * Provides a base implementation of the {@link ReadOnlyList} interface.
  * 
  * @param <E> the type of elements in this list
  */

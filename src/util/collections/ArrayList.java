@@ -1,11 +1,12 @@
-package util;
+package util.collections;
 
 import java.util.Arrays;
 
-import util.interfaces.List;
-
 /**
  * An implementation of the {@link List} interface backed by an array.
+ * <p>
+ * An array list provides constant time random access to elements.
+ * </p>
  * 
  * @param <E> the type of elements in this list
  */
@@ -75,6 +76,12 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E> {
 	}
 
 	@Override
+	public void clear() {
+		size = 0;
+		Arrays.fill(array, null);
+	}
+
+	@Override
 	public int size() {
 		return size;
 	}
@@ -88,8 +95,7 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E> {
 	public void ensureCapacity(int minCapacity) {
 		if (array == null) {
 			array = (E[]) new Object[minCapacity];
-		}
-		if (minCapacity > array.length) {
+		} else if (minCapacity > array.length) {
 			// * 1.5
 			int newCapactiy = Math.max(minCapacity, array.length + (array.length >> 1));
 			array = Arrays.copyOf(array, newCapactiy);

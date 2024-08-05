@@ -1,4 +1,4 @@
-package util.interfaces;
+package util.collections;
 
 /**
  * Represents a set of elements.
