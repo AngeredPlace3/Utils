@@ -40,7 +40,7 @@ public interface ReadOnlyMap<K, V> extends ReadOnlyCollection<Entry<K, V>> {
      * @param defaultSupplier the default value supplier
      * @return the value associated with the given key
      */
-    default V getOf(K key, Supplier<V> defaultSupplier) {
+    default V getOr(K key, Supplier<V> defaultSupplier) {
         return containsKey(key) ? get(key) : defaultSupplier.get();
     }
 
