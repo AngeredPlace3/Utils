@@ -1,101 +1,105 @@
 package util;
 
 import java.util.Arrays;
-import java.util.Objects;
 
-public class ArrayList<T> extends List<T> {
-    private static final int DEFAULT_CAPACITY = 10;
-    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+/**
+ * An implementation of the {@link List} interface backed by an array.
+ * 
+ * @param <E> the type of elements in this list
+ */
+public final class ArrayList<E> extends AbstractList<E> {
+	private static final int DEFAULT_CAPACITY = 10;
+	private E[] array;
+	private int size;
 
-    private T[] items;
-    private int size;
-    private float loadFactor = DEFAULT_LOAD_FACTOR;
+	/**
+	 * Create an array list with the specified initial capacity.
+	 * 
+	 * @param initialCapacity the initial capacity
+	 */
+	public ArrayList(int initialCapacity) {
+		if (initialCapacity <= 0) {
+			throw new IllegalArgumentException();
+		}
+		ensureCapacity(initialCapacity);
+		size = 0;
+	}
 
-    public ArrayList() {
-        this(DEFAULT_CAPACITY);
-    }
+	/**
+	 * Create an array list with the default initial capacity of 10.
+	 */
+	public ArrayList() {
+		this(DEFAULT_CAPACITY);
+	}
 
-    public ArrayList(int capacity) {
-        ensureCapacity(capacity);
-    }
+	@Override
+	public void add(int index, E element) {
+		if (index < 0 || index > size) {
+			throw new IndexOutOfBoundsException();
+		}
+		ensureCapacity(size + 1);
+		System.arraycopy(array, index, array, index + 1, size - index);
+		array[index] = element;
+		size++;
+	}
 
-    @Override
-    public void insertAll(Iterable<T> items, int index) throws IndexOutOfBoundsException {
-        if (items instanceof ReadonlyCollection col) {
-            ensureCapacity(col.count() + count());
-        } else if (items instanceof java.util.Collection col) {
-            ensureCapacity(col.size() + count());
-        }
-        super.insertAll(items, index);
-    }
+	@Override
+	public E remove(int index) {
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		E old = array[index];
+		System.arraycopy(array, index + 1, array, index, size - index - 1);
+		size--;
+		return old;
+	}
 
-    @Override
-    public T get(int index) {
-        Objects.checkIndex(index, size);
-        return items[index];
-    }
+	@Override
+	public E set(int index, E element) {
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		E old = array[index];
+		array[index] = element;
+		return old;
+	}
 
-    @Override
-    public int count() {
-        return size;
-    }
+	@Override
+	public E get(int index) throws IndexOutOfBoundsException {
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		return array[index];
+	}
 
-    @Override
-    public void insert(T item, int index) throws IndexOutOfBoundsException {
-        ensureCapacity(size + 1);
-        Objects.checkIndex(index, size + 1);
-        System.arraycopy(items, index, items, index + 1, size - index);
-        items[index] = item;
-        size++;
-    }
+	@Override
+	public int size() {
+		return size;
+	}
 
-    @Override
-    public T remove(int index) throws IndexOutOfBoundsException {
-        Objects.checkIndex(index, size);
-        T item = items[index];
-        System.arraycopy(items, index + 1, items, index, size - index - 1);
-        size--;
-        return item;
-    }
+	/**
+	 * Ensure the capacity of this array.
+	 * 
+	 * @param minCapacity the minimum capacity
+	 */
+	@SuppressWarnings("unchecked")
+	public void ensureCapacity(int minCapacity) {
+		if (array == null) {
+			array = (E[]) new Object[minCapacity];
+		}
+		if (minCapacity > array.length) {
+			// * 1.5
+			int newCapactiy = Math.max(minCapacity, array.length + (array.length >> 1));
+			array = Arrays.copyOf(array, newCapactiy);
+		}
+	}
 
-    @Override
-    public T set(int index, T item) throws IndexOutOfBoundsException {
-        Objects.checkIndex(index, size);
-        T old = items[index];
-        items[index] = item;
-        return old;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void ensureCapacity(int capacity) {
-        if (items == null) {
-            items = (T[]) new Object[capacity];
-        }
-        if (capacity > items.length) {
-            int newCapacity = (int) (items.length * (1 + DEFAULT_LOAD_FACTOR));
-            if (newCapacity < capacity) {
-                newCapacity = capacity;
-            }
-            items = Arrays.copyOf(items, newCapacity);
-        }
-    }
-
-    public static int getDefaultCapacity() {
-        return DEFAULT_CAPACITY;
-    }
-
-    public static float getDefaultLoadFactor() {
-        return DEFAULT_LOAD_FACTOR;
-    }
-
-    public float getLoadFactor() {
-        return loadFactor;
-    }
-
-    public void setLoadFactor(float loadFactor) {
-        if (loadFactor <= 0) {
-            throw new IllegalArgumentException("Load factor must be positive");
-        }
-        this.loadFactor = loadFactor;
-    }
+	/**
+	 * Returns the capacity of this array.
+	 * 
+	 * @return the capacity of this array
+	 */
+	public int getCapacity() {
+		return array.length;
+	}
 }
