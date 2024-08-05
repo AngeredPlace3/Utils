@@ -12,7 +12,7 @@ import util.interfaces.ReadOnlyList;
  * 
  * @param <E> the type of elements in this list
  */
-public abstract class AbstractList<E> implements List<E> {
+public abstract class AbstractList<E> implements ReadOnlyList<E> {
 
     @Override
     public boolean equals(Object obj) {

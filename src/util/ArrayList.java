@@ -2,12 +2,14 @@ package util;
 
 import java.util.Arrays;
 
+import util.interfaces.List;
+
 /**
  * An implementation of the {@link List} interface backed by an array.
  * 
  * @param <E> the type of elements in this list
  */
-public final class ArrayList<E> extends AbstractList<E> {
+public final class ArrayList<E> extends AbstractList<E> implements List<E> {
 	private static final int DEFAULT_CAPACITY = 10;
 	private E[] array;
 	private int size;

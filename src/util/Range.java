@@ -2,7 +2,7 @@ package util;
 
 import java.util.Iterator;
 
-import util.collections.List;
+import util.interfaces.ReadOnlyList;
 
 /**
  * The {@code Range} class represents a range of integers, defined by a from,
@@ -14,7 +14,7 @@ import util.collections.List;
  * calculation, and element access by index.
  * </p>
  */
-public final class Range implements List<Integer> {
+public final class Range implements ReadOnlyList<Integer> {
 
     private final int from, to, step;
     private final int size;
@@ -52,7 +52,7 @@ public final class Range implements List<Integer> {
      *
      * @param from the starting value of the range (inclusive)
      * @param to   the ending value of the range (exclusive)
-     * @param step the step value by which to increment or decrement 
+     * @param step the step value by which to increment or decrement
      * @throws IllegalArgumentException if {@code step} is zero
      * 
      */
