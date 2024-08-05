@@ -83,4 +83,5 @@ public interface ReadOnlyCollection<E> extends Iterable<E> {
     default int maxCapacity() {
         return Integer.MAX_VALUE;
     }
+
 }

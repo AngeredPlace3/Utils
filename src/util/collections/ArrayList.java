@@ -16,7 +16,23 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E>, Dyna
 	private int size;
 
 	/**
-	 * Create an array list with the specified initial capacity.
+	 * Create an {@link ArrayList} with the specified elements.
+	 * 
+	 * @param <E>      the type of elements
+	 * @param elements the elements
+	 * @return a new {@link ArrayList}
+	 */
+	@SuppressWarnings("unchecked")
+	public static <E> ArrayList<E> of(E... elements) {
+		ArrayList<E> list = new ArrayList<>(elements.length);
+		for (E element : elements) {
+			list.add(element);
+		}
+		return list;
+	}
+
+	/**
+	 * Create an {@link ArrayList} with the specified initial capacity.
 	 * 
 	 * @param initialCapacity the initial capacity
 	 */
@@ -29,7 +45,23 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E>, Dyna
 	}
 
 	/**
-	 * Create an array list with the default initial capacity of 10.
+	 * Create an {@link ArrayList} with the specified iterable.
+	 * 
+	 * @param iterable the iterable
+	 */
+	public ArrayList(Iterable<E> iterable) {
+		if (iterable instanceof ReadOnlyCollection<E> collection) {
+			ensureCapacity(collection.size());
+		} else {
+			ensureCapacity(DEFAULT_CAPACITY);
+		}
+		for (E element : iterable) {
+			addLast(element);
+		}
+	}
+
+	/**
+	 * Create an {@link ArrayList} with the default initial capacity of 10.
 	 */
 	public ArrayList() {
 		this(DEFAULT_CAPACITY);
@@ -77,8 +109,8 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E>, Dyna
 
 	@Override
 	public void clear() {
-		size = 0;
 		Arrays.fill(array, null);
+		size = 0;
 	}
 
 	@Override
@@ -99,7 +131,9 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E>, Dyna
 		} else if (minCapacity > array.length) {
 			// * 1.5
 			int newCapactiy = Math.max(minCapacity, array.length + (array.length >> 1));
-			array = Arrays.copyOf(array, newCapactiy);
+			E[] newArray = (E[]) new Object[newCapactiy];
+			System.arraycopy(array, 0, newArray, 0, size);
+			array = newArray;
 		}
 	}
 

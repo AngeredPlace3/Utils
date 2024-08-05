@@ -15,13 +15,44 @@ public final class LinkedList<E> extends AbstractList<E> implements List<E> {
         Node<E> next, previous;
     }
 
+    /**
+     * Create a new {@link LinkedList} with the given elements.
+     *
+     * @param <E>      the type of elements
+     * @param elements the elements
+     * @return a new {@link LinkedList}
+     */
+    @SuppressWarnings("unchecked")
+    public static <E> LinkedList<E> of(E... elements) {
+        LinkedList<E> list = new LinkedList<>();
+        for (E element : elements) {
+            list.add(element);
+        }
+        return list;
+    }
+
     private final Node<E> head, tail;
     private int size;
 
+    /**
+     * Create an empty {@link LinkedList}.
+     */
     public LinkedList() {
         this(new Node<>(), new Node<>(), 0);
         head.next = tail;
         tail.previous = head;
+    }
+
+    /**
+     * Create a new {@link LinkedList} with the given iterable.
+     * 
+     * @param iterable the iterable
+     */
+    public LinkedList(Iterable<E> iterable) {
+        this();
+        for (E element : iterable) {
+            add(element);
+        }
     }
 
     private LinkedList(Node<E> head, Node<E> tail, int size) {
