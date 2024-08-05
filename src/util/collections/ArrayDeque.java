@@ -6,17 +6,34 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public final class ArrayDeque<E> implements Deque<E> {
+/**
+ * Implements a double-ended queue using an array.
+ * <p>
+ * This implementation uses dynamic array resizing and performs O(1) remove and
+ * insert operations, given no allocation was required.
+ * <p>
+ * 
+ * @param <E> the type of elements in the deque
+ */
+public final class ArrayDeque<E> implements Deque<E>, DynamicArray {
 
     private E[] array;
     private int front;
     private int back;
     private int size;
 
+    /**
+     * Constructs an empty deque with an initial capacity of 10.
+     */
     public ArrayDeque() {
         this(10);
     }
 
+    /**
+     * Constructs an empty deque with the specified initial capacity.
+     * 
+     * @param capacity the initial capacity
+     */
     public ArrayDeque(int capacity) {
         ensureCapacity(capacity);
         front = 0;
@@ -24,6 +41,9 @@ public final class ArrayDeque<E> implements Deque<E> {
         size = 0;
     }
 
+    /**
+     * Removes all of the elements from this deque.
+     */
     public void clear() {
         Arrays.fill(array, null);
         front = 0;
@@ -76,6 +96,11 @@ public final class ArrayDeque<E> implements Deque<E> {
         }
     }
 
+    /**
+     * Returns the capacity of the deque.
+     * 
+     * @return the capacity of the deque
+     */
     public int getCapacity() {
         if (array == null) {
             return 0;

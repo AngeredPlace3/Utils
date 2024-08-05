@@ -10,7 +10,7 @@ import java.util.Arrays;
  * 
  * @param <E> the type of elements in this list
  */
-public final class ArrayList<E> extends AbstractList<E> implements List<E> {
+public final class ArrayList<E> extends AbstractList<E> implements List<E>, DynamicArray {
 	private static final int DEFAULT_CAPACITY = 10;
 	private E[] array;
 	private int size;
@@ -87,11 +87,12 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E> {
 	}
 
 	/**
-	 * Ensure the capacity of this array.
+	 * Ensures that the list has at least the given capacity.
 	 * 
 	 * @param minCapacity the minimum capacity
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public void ensureCapacity(int minCapacity) {
 		if (array == null) {
 			array = (E[]) new Object[Math.max(minCapacity, 1)];
@@ -103,10 +104,11 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E> {
 	}
 
 	/**
-	 * Returns the capacity of this array.
+	 * Returns the current capacity of this list.
 	 * 
-	 * @return the capacity of this array
+	 * @return the current capacity
 	 */
+	@Override
 	public int getCapacity() {
 		if (array == null) {
 			return 0;
