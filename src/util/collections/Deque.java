@@ -33,7 +33,7 @@ public interface Deque<E> extends ReadOnlyDeque<E>, Stack<E>, Queue<E> {
      * @return the first element of this deque
      * @throws NoSuchElementException if this deque is empty
      */
-    E removeFirst() throws NoSuchElementException; 
+    E removeFirst() throws NoSuchElementException;
 
     /**
      * Removes and returns the last element of this deque.
@@ -42,4 +42,25 @@ public interface Deque<E> extends ReadOnlyDeque<E>, Stack<E>, Queue<E> {
      * @throws NoSuchElementException if this deque is empty
      */
     E removeLast() throws NoSuchElementException;
+
+    @Override
+    default E pop() throws NoSuchElementException {
+        return removeFirst();
+    }
+
+    @Override
+    default void push(E element) {
+        addFirst(element);
+    }
+
+    @Override
+    default E dequeue() throws NoSuchElementException {
+        return removeFirst();
+    }
+
+    @Override
+    default void enqueue(E element) {
+        addLast(element);
+    }
+
 }

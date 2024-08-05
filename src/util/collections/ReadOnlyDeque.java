@@ -5,7 +5,8 @@ import java.util.NoSuchElementException;
 /**
  * Represents a read-only deque of elements.
  * <p>
- * Deques are double-ended queues that support both insertion and removal from either end.
+ * Deques are double-ended queues that support both insertion and removal from
+ * either end.
  * </p>
  * 
  * @param <E> the type of elements in this deque
@@ -20,7 +21,6 @@ public interface ReadOnlyDeque<E> extends ReadOnlyStack<E>, ReadOnlyQueue<E> {
      */
     E getFirst() throws NoSuchElementException;
 
-
     /**
      * Returns the last element of this deque.
      * 
@@ -28,4 +28,9 @@ public interface ReadOnlyDeque<E> extends ReadOnlyStack<E>, ReadOnlyQueue<E> {
      * @throws NoSuchElementException if this deque is empty
      */
     E getLast() throws NoSuchElementException;
+
+    @Override
+    default E peek() throws NoSuchElementException {
+        return getFirst();
+    }
 }
