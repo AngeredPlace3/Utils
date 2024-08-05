@@ -31,7 +31,8 @@ public class ArrayStack<T> implements Stack<T> {
      * Create an empty stack with the specified initial capacity.
      * 
      * @param initialCapacity the initial capacity
-     * @throws IllegalArgumentException if the initial capacity is less than or equal to 0
+     * @throws IllegalArgumentException if the initial capacity is less than or
+     *                                  equal to 0
      */
     public ArrayStack(int initialCapacity) {
         if (initialCapacity <= 0) {
@@ -96,7 +97,7 @@ public class ArrayStack<T> implements Stack<T> {
     @SuppressWarnings("unchecked")
     public void ensureCapacity(int minCapacity) {
         if (array == null) {
-            array = (T[]) new Object[minCapacity];
+            array = (T[]) new Object[Math.max(1, minCapacity)];
         }
         if (minCapacity > array.length) {
             // * 1.5
@@ -115,6 +116,9 @@ public class ArrayStack<T> implements Stack<T> {
     }
 
     public int getCapacity() {
+        if (array == null) {
+            return 0;
+        }
         return array.length;
     }
 
@@ -127,5 +131,4 @@ public class ArrayStack<T> implements Stack<T> {
         return joiner.toString();
     }
 
-    
 }

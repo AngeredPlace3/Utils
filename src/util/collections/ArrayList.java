@@ -94,7 +94,7 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E> {
 	@SuppressWarnings("unchecked")
 	public void ensureCapacity(int minCapacity) {
 		if (array == null) {
-			array = (E[]) new Object[minCapacity];
+			array = (E[]) new Object[Math.max(minCapacity, 1)];
 		} else if (minCapacity > array.length) {
 			// * 1.5
 			int newCapactiy = Math.max(minCapacity, array.length + (array.length >> 1));
@@ -108,6 +108,9 @@ public final class ArrayList<E> extends AbstractList<E> implements List<E> {
 	 * @return the capacity of this array
 	 */
 	public int getCapacity() {
+		if (array == null) {
+			return 0;
+		}
 		return array.length;
 	}
 }
